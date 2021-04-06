@@ -11,4 +11,6 @@
 
     <color name="first">#FFFF957E</color>
     <color name="background">#FFF9B1A2</color>
+
+    <color name="text">#FF707070</color>
 </resources>

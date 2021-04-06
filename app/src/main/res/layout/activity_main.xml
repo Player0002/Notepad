@@ -54,4 +54,13 @@
             android:layout_alignParentBottom="true"
             android:background="@drawable/bottom_drop_shadow"/>
     </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/preview_items"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2"
+        tools:listitem="@layout/preview_layout"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
