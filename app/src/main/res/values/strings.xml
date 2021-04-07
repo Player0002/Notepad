@@ -3,4 +3,6 @@
     <string name="note_str">Note</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search_hint">여기에 입력하세요</string>
+    <string name="submit">설정</string>
 </resources>

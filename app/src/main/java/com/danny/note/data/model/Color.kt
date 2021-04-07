@@ -8,4 +8,4 @@ import androidx.room.PrimaryKey
 )
 data class Color (
     @PrimaryKey(autoGenerate = true)
-    val id : Int? = null, val r : Int, val g : Int, val b : Int, val name : String)
+    val id : Int? = null, val r : Int, val g : Int, val b : Int, var name : String)

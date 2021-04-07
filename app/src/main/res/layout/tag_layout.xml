@@ -22,5 +22,6 @@
         android:layout_height="wrap_content"
         android:textColor="#707070"
         android:layout_marginStart="5dp"
+        android:maxLength="4"
         tools:text="검정색"/>
 </LinearLayout>

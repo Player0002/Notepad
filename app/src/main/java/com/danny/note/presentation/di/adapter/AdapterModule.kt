@@ -1,6 +1,7 @@
 package com.danny.note.presentation.di.adapter
 
 import com.danny.note.presentation.adapter.FilterAdapter
+import com.danny.note.presentation.adapter.SearchAdapter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,5 +15,10 @@ class AdapterModule {
     @Singleton
     fun provideFilterAdapter() : FilterAdapter{
         return FilterAdapter()
+    }
+    @Provides
+    @Singleton
+    fun provideSearchAdapter() : SearchAdapter {
+        return SearchAdapter()
     }
 }

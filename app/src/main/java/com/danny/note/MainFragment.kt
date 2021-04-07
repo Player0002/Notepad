@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.danny.note.databinding.FragmentMainBinding
 import com.danny.note.presentation.adapter.FilterAdapter
 import com.danny.note.presentation.viewModel.NoteViewModel
@@ -30,6 +33,19 @@ class MainFragment : Fragment() {
         viewModel = (activity as MainActivity).viewModel
         filterAdapter = (activity as MainActivity).filterAdapter
 
+        filterAdapter.setOnAddButtonPress {
+            findNavController().navigate(R.id.action_mainFragment_to_colorFragment)
+        }
+
+        filterAdapter.setOnTagPress { viewModel.removeFilter(it) }
+
+        viewModel.selectedFilter.observe(viewLifecycleOwner) {
+            filterAdapter.differ.submitList(it)
+        }
+
+        viewModel.toastRequest.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let{ str -> Toast.makeText(context, str, Toast.LENGTH_SHORT).show() }
+        }
         //for hide recyclerview
         binding.appbarLayout.addOnOffsetChangedListener(
             AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
@@ -37,13 +53,14 @@ class MainFragment : Fragment() {
                      (appBarLayout.totalScrollRange+ verticalOffset) / appBarLayout.totalScrollRange.toFloat()
             }
         )
+
         initRecyclerView()
     }
 
     private fun initRecyclerView() {
         binding.filter.apply {
             adapter = filterAdapter
-            layoutManager = LinearLayoutManager(activity)
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         }
     }
 }

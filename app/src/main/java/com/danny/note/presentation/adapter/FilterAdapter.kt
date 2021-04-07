@@ -23,6 +23,9 @@ class FilterAdapter : RecyclerView.Adapter<FilterAdapter.FilterViewHolder>() {
                         color.b
                     )
                 )
+                root.setOnClickListener {
+                    onTagPress?.invoke(color)
+                }
             }
         }
         fun bindButton() {
@@ -59,6 +62,12 @@ class FilterAdapter : RecyclerView.Adapter<FilterAdapter.FilterViewHolder>() {
 
     fun setOnAddButtonPress(listener : () -> Unit) {
         onAddButtonPress = listener
+    }
+
+    private var onTagPress :((Color) -> Unit)? = null
+
+    fun setOnTagPress(listener : (Color) -> Unit) {
+        onTagPress = listener
     }
 
     override fun onBindViewHolder(holder: FilterViewHolder, position: Int) {
