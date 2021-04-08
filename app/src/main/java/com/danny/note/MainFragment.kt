@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.asFlow
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +16,7 @@ import com.danny.note.presentation.adapter.FilterAdapter
 import com.danny.note.presentation.adapter.PreviewAdapter
 import com.danny.note.presentation.viewModel.NoteViewModel
 import com.google.android.material.appbar.AppBarLayout
+import kotlinx.coroutines.flow.first
 
 class MainFragment : Fragment() {
 
@@ -45,6 +47,10 @@ class MainFragment : Fragment() {
         }
         filterAdapter.setOnTagPress {
             viewModel.removeFilter(it)
+        }
+
+        previewAdapter.setOnConfirm {
+            viewModel.deleteNote(it)
         }
 
         viewModel.filteredEdit().observe(viewLifecycleOwner) {

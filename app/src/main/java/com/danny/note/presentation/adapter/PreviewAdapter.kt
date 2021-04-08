@@ -1,5 +1,6 @@
 package com.danny.note.presentation.adapter
 
+import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -30,11 +31,25 @@ class PreviewAdapter : RecyclerView.Adapter<PreviewAdapter.PreviewViewHolder>() 
                     layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
                     adapter = PreviewChildAdapter().apply { differ.submitList(note.tags) }
                 }
+                root.setOnLongClickListener {
+                    AlertDialog.Builder(root.context).setTitle("Delete").setMessage("${note.title} 노트를 지울까요?").setPositiveButton("Y") { dialog, i ->
+                        onConfirm?.invoke(note)
+                    }.setNegativeButton("N") {dialog, i ->
+
+                    }.show()
+                    return@setOnLongClickListener false
+                }
             }
         }
     }
 
     val differ = AsyncListDiffer(this, differCallback)
+
+    private var onConfirm : ((Note) -> Unit)? = null
+
+    fun setOnConfirm(callback : (Note) -> Unit) {
+        onConfirm = callback
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PreviewViewHolder {
         val layout = PreviewLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
