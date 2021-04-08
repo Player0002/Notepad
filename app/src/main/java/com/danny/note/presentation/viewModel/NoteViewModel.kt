@@ -27,6 +27,7 @@ class NoteViewModel(
     val selectedEdit = MutableLiveData<List<Color>>()
     val toastRequest = MutableLiveData<Event<String>>()
     val transitionRequest = MutableLiveData<Event<Boolean>>()
+    val editTransitionRequest = MutableLiveData<Event<Boolean>>()
     val selectedColor = MutableLiveData<Color>()
 
     fun savedColor() = liveData {
@@ -84,6 +85,7 @@ class NoteViewModel(
             return@launch
         }
         saveNoteUseCase.execute(note)
+        editTransitionRequest.postValue(Event(true))
     }
 
     fun deleteNote(note : Note) = viewModelScope.launch {
