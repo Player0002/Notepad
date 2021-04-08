@@ -21,7 +21,7 @@ class EditFragment : Fragment() {
     private lateinit var tagAdapter: FilterAdapter
     private lateinit var viewModel: NoteViewModel
 
-    private var note : Note? = null
+    private var note: Note? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,18 +68,23 @@ class EditFragment : Fragment() {
                         tagAdapter.differ.currentList
                     )
                 )
-                findNavController().popBackStack()
+
             }
         }
-        binding.toolbar.setNavigationOnClickListener { findNavController().popBackStack() }
+        viewModel.editTransitionRequest.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { findNavController().popBackStack() }
+        }
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
 
         note?.let { note ->
             with(binding) {
-                if(title.text.isEmpty())
+                if (title.text.isEmpty())
                     title.setText(note.title)
-                if(contents.text.isEmpty())
+                if (contents.text.isEmpty())
                     contents.setText(note.contents)
-                if(tagAdapter.differ.currentList.isEmpty())
+                if (tagAdapter.differ.currentList.isEmpty())
                     viewModel.setEdit(note.tags)
             }
         }
