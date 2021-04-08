@@ -1,16 +1,13 @@
 package com.danny.note.data.db.note
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.danny.note.data.model.Note
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NoteDAO {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveNote(note : Note)
 
     @Delete

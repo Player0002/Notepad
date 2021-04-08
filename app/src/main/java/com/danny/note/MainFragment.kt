@@ -52,6 +52,9 @@ class MainFragment : Fragment() {
         previewAdapter.setOnConfirm {
             viewModel.deleteNote(it)
         }
+        previewAdapter.setOnClick {
+            findNavController().navigate(R.id.action_mainFragment_to_editFragment, bundleOf("note" to it))
+        }
 
         viewModel.filteredEdit().observe(viewLifecycleOwner) {
             previewAdapter.differ.submitList(it)

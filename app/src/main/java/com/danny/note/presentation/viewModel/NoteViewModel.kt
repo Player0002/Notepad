@@ -63,21 +63,26 @@ class NoteViewModel(
     }
 
     fun addEdit(color : Color) = viewModelScope.launch {
-        getSavedColorUseCase.execute().first().let {
-            if (selectedEdit.value?.contains(color) == true) {
-                toastRequest.postValue(Event("이미 등록된 태그입니다."))
-                return@launch
-            };
-            selectedEdit.postValue(ArrayList<Color>(selectedEdit.value ?: listOf()).apply {
-                add(
-                    color
-                ); distinct()
-            })
-            transitionRequest.postValue(Event(true))
-        }
+        if (selectedEdit.value?.contains(color) == true) {
+            toastRequest.postValue(Event("이미 등록된 태그입니다."))
+            return@launch
+        };
+        selectedEdit.postValue(ArrayList<Color>(selectedEdit.value ?: listOf()).apply {
+            add(
+                color
+            ); distinct()
+        })
+        transitionRequest.postValue(Event(true))
     }
 
+    fun setEdit(list : List<Color>) = selectedEdit.postValue(list)
+    fun clearEdit() = selectedEdit.postValue(arrayListOf())
+
     fun saveNote(note : Note) = viewModelScope.launch {
+        if(note.tags.isEmpty()) {
+            toastRequest.value = Event("태그를 선택해주세요.")
+            return@launch
+        }
         saveNoteUseCase.execute(note)
     }
 

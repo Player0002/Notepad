@@ -39,6 +39,9 @@ class PreviewAdapter : RecyclerView.Adapter<PreviewAdapter.PreviewViewHolder>() 
                     }.show()
                     return@setOnLongClickListener false
                 }
+                root.setOnClickListener {
+                    onClick?.invoke(note)
+                }
             }
         }
     }
@@ -49,6 +52,12 @@ class PreviewAdapter : RecyclerView.Adapter<PreviewAdapter.PreviewViewHolder>() 
 
     fun setOnConfirm(callback : (Note) -> Unit) {
         onConfirm = callback
+    }
+
+    private var onClick : ((Note) -> Unit)? = null
+
+    fun setOnClick(callback : (Note) -> Unit) {
+        onClick = callback
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PreviewViewHolder {
