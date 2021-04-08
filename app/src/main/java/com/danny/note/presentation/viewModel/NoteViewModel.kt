@@ -3,6 +3,7 @@ package com.danny.note.presentation.viewModel
 import androidx.lifecycle.*
 import com.danny.note.data.model.Color
 import com.danny.note.data.model.Note
+import com.danny.note.data.model.Pairs
 import com.danny.note.domain.usecase.color.DeleteColorUseCase
 import com.danny.note.domain.usecase.color.GetSavedColorUseCase
 import com.danny.note.domain.usecase.color.SaveColorUseCase
@@ -34,17 +35,19 @@ class NoteViewModel(
 
     fun filteredEdit() = liveData {
         emit(getSavedNoteUseCase.execute().first())
-        selectedFilter.asFlow().collect { colors ->
-            getSavedNoteUseCase.execute().first().let {
-                emit(
-                    if (colors.isEmpty())
-                        it
-                    else it.filter { cmp ->
-                        val filtered = (cmp.tags + colors).groupBy { it }.filter { it.value.size > 1 }
-                        filtered.size == colors.size
-                    }.distinct()
-                )
-            }
+        getSavedNoteUseCase.execute().combine(selectedFilter.asFlow()) { note, colors ->
+            Pairs(note, colors)
+        }.collect {
+            val colors = it.seconds
+            val note = it.first
+            emit(
+                if (colors.isEmpty())
+                    note
+                else note.filter { cmp ->
+                    val filtered = (cmp.tags + colors).groupBy { it }.filter { it.value.size > 1 }
+                    filtered.size == colors.size
+                }.distinct()
+            )
         }
     }
 
@@ -78,6 +81,9 @@ class NoteViewModel(
         saveNoteUseCase.execute(note)
     }
 
+    fun deleteNote(note : Note) = viewModelScope.launch {
+        deleteNoteUseCase.execute(note)
+    }
 
     fun removeFilter(color : Color)  = viewModelScope.launch{
         getSavedColorUseCase.execute().first().let {
