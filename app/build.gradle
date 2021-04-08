@@ -72,6 +72,8 @@ dependencies {
     kapt "com.google.dagger:hilt-android-compiler:$hlit_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
+    implementation 'com.google.code.gson:gson:2.8.6'
+
     testImplementation 'junit:junit:4.+'
     testImplementation "com.google.truth:truth:1.1.2"
 

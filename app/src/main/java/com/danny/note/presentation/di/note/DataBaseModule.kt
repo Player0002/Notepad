@@ -1,9 +1,11 @@
-package com.danny.note.presentation.di.color
+package com.danny.note.presentation.di.note
 
 import android.app.Application
 import androidx.room.Room
 import com.danny.note.data.db.color.ColorDAO
 import com.danny.note.data.db.color.ColorDatabase
+import com.danny.note.data.db.note.NoteDAO
+import com.danny.note.data.db.note.NoteDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,15 +17,15 @@ import javax.inject.Singleton
 class DataBaseModule {
     @Singleton
     @Provides
-    fun provideColorDatabase(app : Application) : ColorDatabase {
-        return Room.databaseBuilder(app, ColorDatabase::class.java, "color_db")
+    fun provideNoteDatabase(app : Application) : NoteDatabase {
+        return Room.databaseBuilder(app, NoteDatabase::class.java, "note_db")
             .fallbackToDestructiveMigration()
             .build()
     }
 
     @Singleton
     @Provides
-    fun provideColorDao(colorDatabase: ColorDatabase) : ColorDAO {
-        return colorDatabase.getColorDAO()
+    fun provideNoteDao(noteDatabase: NoteDatabase) : NoteDAO {
+        return noteDatabase.getNoteDAO()
     }
 }

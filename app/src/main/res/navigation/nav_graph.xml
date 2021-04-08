@@ -19,6 +19,9 @@
             app:popExitAnim="@anim/slide_out_to_right"
             app:popUpTo="@id/mainFragment"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_addFragment_to_editFragment"
+            app:destination="@id/editFragment" />
     </fragment>
     <fragment
         android:id="@+id/colorFragment"
@@ -41,12 +44,19 @@
             app:popExitAnim="@anim/slide_out_to_right"
             app:popUpTo="@id/mainFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_colorFragment_to_editFragment"
+            app:destination="@id/editFragment" />
     </fragment>
     <fragment
         android:id="@+id/editFragment"
         android:name="com.danny.note.EditFragment"
         android:label="fragment_edit"
-        tools:layout="@layout/fragment_edit" />
+        tools:layout="@layout/fragment_edit" >
+        <action
+            android:id="@+id/action_editFragment_to_colorFragment"
+            app:destination="@id/colorFragment" />
+    </fragment>
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.danny.note.MainFragment"

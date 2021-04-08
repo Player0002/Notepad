@@ -1,6 +1,7 @@
 package com.danny.note.presentation.di.adapter
 
 import com.danny.note.presentation.adapter.FilterAdapter
+import com.danny.note.presentation.adapter.PreviewAdapter
 import com.danny.note.presentation.adapter.SearchAdapter
 import dagger.Module
 import dagger.Provides
@@ -12,7 +13,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class AdapterModule {
     @Provides
-    @Singleton
     fun provideFilterAdapter() : FilterAdapter{
         return FilterAdapter()
     }
@@ -20,5 +20,10 @@ class AdapterModule {
     @Singleton
     fun provideSearchAdapter() : SearchAdapter {
         return SearchAdapter()
+    }
+    @Provides
+    @Singleton
+    fun providePreviewAdapter() : PreviewAdapter {
+        return PreviewAdapter()
     }
 }

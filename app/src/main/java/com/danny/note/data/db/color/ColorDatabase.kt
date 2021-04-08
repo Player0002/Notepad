@@ -1,4 +1,4 @@
-package com.danny.note.data.db
+package com.danny.note.data.db.color
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

@@ -9,10 +9,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -39,8 +41,15 @@ class ColorFragment : Fragment() {
         viewModel = (activity as MainActivity).viewModel
         searchAdapter = (activity as MainActivity).searchAdapter
 
-        searchAdapter.setOnClickListener {
-            viewModel.addFilter(it)
+        searchAdapter.setOnClickListener { color ->
+            arguments?.getString("code")?.let {
+                when(it) {
+                    "main" ->
+                        viewModel.addFilter(color)
+                    "edit" ->
+                        viewModel.addEdit(color)
+                }
+            }
         }
 
         viewModel.savedColor().observe(viewLifecycleOwner) {
@@ -68,7 +77,7 @@ class ColorFragment : Fragment() {
         }
         viewModel.transitionRequest.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let {
-                findNavController().navigate(R.id.action_colorFragment_to_mainFragment)
+                findNavController().popBackStack()
             }
         }
 
@@ -86,9 +95,6 @@ class ColorFragment : Fragment() {
             }
         }
 
-        viewModel.toastRequest.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let{ str -> Toast.makeText(context, str, Toast.LENGTH_SHORT).show() }
-        }
         ItemTouchHelper(itemTouchCallback).attachToRecyclerView(binding.searchRecycler)
         initRecyclerView()
     }

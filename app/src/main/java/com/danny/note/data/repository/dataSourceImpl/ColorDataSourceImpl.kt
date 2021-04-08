@@ -1,6 +1,6 @@
 package com.danny.note.data.repository.dataSourceImpl
 
-import com.danny.note.data.db.ColorDAO
+import com.danny.note.data.db.color.ColorDAO
 import com.danny.note.data.model.Color
 import com.danny.note.data.repository.dataSource.ColorDataSource
 import kotlinx.coroutines.flow.Flow

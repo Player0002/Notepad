@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import com.danny.note.databinding.ActivityMainBinding
 import com.danny.note.presentation.adapter.FilterAdapter
+import com.danny.note.presentation.adapter.PreviewAdapter
 import com.danny.note.presentation.adapter.SearchAdapter
 import com.danny.note.presentation.viewModel.NoteViewModel
 import com.danny.note.presentation.viewModel.NoteViewModelFactory
@@ -22,6 +23,12 @@ class MainActivity : AppCompatActivity() {
     lateinit var filterAdapter: FilterAdapter
 
     @Inject
+    lateinit var editorAdapter : FilterAdapter
+
+    @Inject
+    lateinit var previewAdapter: PreviewAdapter
+
+    @Inject
     lateinit var searchAdapter: SearchAdapter
 
     val viewModel : NoteViewModel by viewModels { factory }
@@ -33,5 +40,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        viewModel.toastRequest.observe(this) {
+            it.getContentIfNotHandled()?.let{ str -> Toast.makeText(applicationContext, str, Toast.LENGTH_SHORT).show() }
+        }
     }
 }

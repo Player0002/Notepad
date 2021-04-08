@@ -1,4 +1,4 @@
-package com.danny.note.data.db
+package com.danny.note.data.db.color
 
 import androidx.room.*
 import com.danny.note.data.model.Color
@@ -12,6 +12,6 @@ interface ColorDAO {
     @Delete
     suspend fun delete(color : Color)
 
-    @Query("SELECT * FROM color")
+    @Query("SELECT * FROM color ORDER BY id DESC")
     fun getAllColors() : Flow<List<Color>>
 }

@@ -50,12 +50,9 @@ class AddFragment : Fragment() {
             binding.inputName.setText( it.name )
         }
 
-        viewModel.toastRequest.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let{ str -> Toast.makeText(context, str, Toast.LENGTH_SHORT).show() }
-        }
         viewModel.transitionRequest.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let {
-                findNavController().navigate(R.id.action_addFragment_to_mainFragment)
+                findNavController().popBackStack()
             }
         }
 
