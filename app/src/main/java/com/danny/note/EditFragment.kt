@@ -1,9 +1,11 @@
 package com.danny.note
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -13,6 +15,9 @@ import com.danny.note.data.model.Note
 import com.danny.note.databinding.FragmentEditBinding
 import com.danny.note.presentation.adapter.FilterAdapter
 import com.danny.note.presentation.viewModel.NoteViewModel
+import java.sql.Date
+import java.time.DateTimeException
+import java.util.*
 
 
 class EditFragment : Fragment() {
@@ -20,6 +25,7 @@ class EditFragment : Fragment() {
     private lateinit var binding: FragmentEditBinding
     private lateinit var tagAdapter: FilterAdapter
     private lateinit var viewModel: NoteViewModel
+    private lateinit var inputMethodManager : InputMethodManager
 
     private var note: Note? = null
 
@@ -34,7 +40,6 @@ class EditFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_edit, container, false)
-
         return view
     }
 
@@ -44,7 +49,7 @@ class EditFragment : Fragment() {
         binding = FragmentEditBinding.bind(view)
         tagAdapter = (activity as MainActivity).editorAdapter
         viewModel = (activity as MainActivity).viewModel
-
+        inputMethodManager = (activity as MainActivity).getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         tagAdapter.setOnAddButtonPress {
             findNavController().navigate(
                 R.id.action_editFragment_to_colorFragment,
@@ -65,16 +70,21 @@ class EditFragment : Fragment() {
                         note?.id,
                         title.text.toString(),
                         contents.text.toString(),
-                        tagAdapter.differ.currentList
+                        tagAdapter.differ.currentList,
+                        Calendar.getInstance().timeInMillis
                     )
                 )
 
             }
         }
         viewModel.editTransitionRequest.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { findNavController().popBackStack() }
+            it.getContentIfNotHandled()?.let {
+                inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+                findNavController().popBackStack()
+            }
         }
         binding.toolbar.setNavigationOnClickListener {
+            inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
             findNavController().popBackStack()
         }
 
@@ -92,9 +102,9 @@ class EditFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         tagAdapter.differ.submitList(listOf())
         viewModel.clearEdit();
+        super.onDestroy()
     }
 
     private fun initRecyclerView() {

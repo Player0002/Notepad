@@ -1,9 +1,9 @@
 package com.danny.note.presentation.viewModel
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.danny.note.data.model.Color
 import com.danny.note.data.model.Note
-import com.danny.note.data.model.Pairs
 import com.danny.note.domain.usecase.color.DeleteColorUseCase
 import com.danny.note.domain.usecase.color.GetSavedColorUseCase
 import com.danny.note.domain.usecase.color.SaveColorUseCase
@@ -35,35 +35,27 @@ class NoteViewModel(
     }
 
     fun filteredEdit() = liveData {
-        emit(getSavedNoteUseCase.execute().first())
-        getSavedNoteUseCase.execute().combine(selectedFilter.asFlow()) { note, colors ->
-            Pairs(note, colors)
-        }.collect {
-            val colors = it.seconds
-            val note = it.first
-            emit(
-                if (colors.isEmpty())
-                    note
-                else note.filter { cmp ->
-                    val filtered = (cmp.tags + colors).groupBy { it }.filter { it.value.size > 1 }
-                    filtered.size == colors.size
-                }.distinct()
-            )
+        getSavedNoteUseCase.execute().collect {
+            emit(it)
         }
     }
 
-    fun addFilter(color : Color) = viewModelScope.launch{
+    fun addFilter(color: Color) = viewModelScope.launch {
         getSavedColorUseCase.execute().first().let {
-            if(selectedFilter.value?.contains(color) == true) {
+            if (selectedFilter.value?.contains(color) == true) {
                 toastRequest.postValue(Event("이미 등록된 필터입니다."))
                 return@launch
             };
-            selectedFilter.postValue( ArrayList<Color>(selectedFilter.value ?: listOf()).apply { add(color); distinct();}.reversed() )
+            selectedFilter.postValue(ArrayList<Color>(selectedFilter.value ?: listOf()).apply {
+                add(
+                    color
+                ); distinct();
+            }.reversed())
             transitionRequest.postValue(Event(true))
         }
     }
 
-    fun addEdit(color : Color) = viewModelScope.launch {
+    fun addEdit(color: Color) = viewModelScope.launch {
         if (selectedEdit.value?.contains(color) == true) {
             toastRequest.postValue(Event("이미 등록된 태그입니다."))
             return@launch
@@ -76,11 +68,11 @@ class NoteViewModel(
         transitionRequest.postValue(Event(true))
     }
 
-    fun setEdit(list : List<Color>) = selectedEdit.postValue(list)
+    fun setEdit(list: List<Color>) = selectedEdit.postValue(list)
     fun clearEdit() = selectedEdit.postValue(arrayListOf())
 
-    fun saveNote(note : Note) = viewModelScope.launch {
-        if(note.tags.isEmpty()) {
+    fun saveNote(note: Note) = viewModelScope.launch {
+        if (note.tags.isEmpty()) {
             toastRequest.value = Event("태그를 선택해주세요.")
             return@launch
         }
@@ -88,21 +80,31 @@ class NoteViewModel(
         editTransitionRequest.postValue(Event(true))
     }
 
-    fun deleteNote(note : Note) = viewModelScope.launch {
+    fun deleteNote(note: Note) = viewModelScope.launch {
         deleteNoteUseCase.execute(note)
     }
 
-    fun removeFilter(color : Color)  = viewModelScope.launch{
+    fun removeFilter(color: Color) = viewModelScope.launch {
         getSavedColorUseCase.execute().first().let {
-            selectedFilter.postValue( ArrayList<Color>(selectedFilter.value?: listOf()).apply { remove(color); distinct(); }.reversed() )
+            selectedFilter.postValue(
+                ArrayList<Color>(
+                    selectedFilter.value ?: listOf()
+                ).apply { remove(color); distinct(); }.reversed()
+            )
         }
     }
-    fun removeEdit(color : Color)  = viewModelScope.launch{
+
+    fun removeEdit(color: Color) = viewModelScope.launch {
         getSavedColorUseCase.execute().first().let {
-            selectedEdit.postValue( ArrayList<Color>(selectedEdit.value?: listOf()).apply { remove(color); distinct() } )
+            selectedEdit.postValue(ArrayList<Color>(selectedEdit.value ?: listOf()).apply {
+                remove(
+                    color
+                ); distinct()
+            })
         }
     }
-    fun removeColor(color : Color) = viewModelScope.launch {
+
+    fun removeColor(color: Color) = viewModelScope.launch {
         removeFilter(color)
         removeEdit(color)
         deleteColorUseCase.execute(color)
@@ -116,24 +118,24 @@ class NoteViewModel(
 
         getSavedColorUseCase.execute().first().let {
             val filtered = it.filter { cmp -> cmp.r == r && cmp.g == g && cmp.b == b }
-            if(filtered.count() > 0) {
+            if (filtered.count() > 0) {
                 selectedColor.postValue(filtered.first())
-            }else {
-                selectedColor.postValue( Color(null, r, g, b, "새로운 색"))
+            } else {
+                selectedColor.postValue(Color(null, r, g, b, "새로운 색"))
             }
         }
     }
 
-    fun addColor(name : String) = viewModelScope.launch{
+    fun addColor(name: String) = viewModelScope.launch {
         selectedColor.value?.let { color ->
-            getSavedColorUseCase.execute().first().let{
+            getSavedColorUseCase.execute().first().let {
                 val r = color.r
                 val g = color.g
                 val b = color.b
-                val filtered = it.filter { cmp -> cmp.r == r && cmp.g == g && cmp.b == b}
+                val filtered = it.filter { cmp -> cmp.r == r && cmp.g == g && cmp.b == b }
                 if (filtered.count() > 0) {
                     toastRequest.postValue(Event("Already Registered : ${filtered.first().name}"))
-                }else {
+                } else {
                     saveColorUseCase.execute(color.apply {
                         this.name = name
                     });

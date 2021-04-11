@@ -1,6 +1,7 @@
 package com.danny.note
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,11 +58,12 @@ class MainFragment : Fragment() {
         }
 
         viewModel.filteredEdit().observe(viewLifecycleOwner) {
-            previewAdapter.differ.submitList(it)
+            previewAdapter.submitList(list = it)
             binding.previewItems.smoothScrollToPosition(0)
         }
 
         viewModel.selectedFilter.observe(viewLifecycleOwner) {
+            previewAdapter.submitList(filter = it)
             filterAdapter.differ.submitList(it)
         }
 
