@@ -12,7 +12,7 @@
         android:theme="@style/Theme.Note"
         >
         <activity android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden|stateAlwaysHidden">
+            android:windowSoftInputMode="adjustPan|stateHidden|stateAlwaysHidden|stateVisible">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

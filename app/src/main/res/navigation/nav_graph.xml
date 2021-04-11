@@ -21,7 +21,12 @@
             app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_addFragment_to_editFragment"
-            app:destination="@id/editFragment" />
+            app:destination="@id/editFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_to_right"
+            />
     </fragment>
     <fragment
         android:id="@+id/colorFragment"
@@ -46,6 +51,10 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_colorFragment_to_editFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_to_right"
             app:destination="@id/editFragment" />
     </fragment>
     <fragment
@@ -55,6 +64,10 @@
         tools:layout="@layout/fragment_edit" >
         <action
             android:id="@+id/action_editFragment_to_colorFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_to_right"
             app:destination="@id/colorFragment" />
     </fragment>
     <fragment

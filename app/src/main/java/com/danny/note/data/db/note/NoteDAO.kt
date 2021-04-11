@@ -13,6 +13,6 @@ interface NoteDAO {
     @Delete
     suspend fun deleteNote(note : Note)
 
-    @Query("SELECT * FROM note ORDER BY id DESC")
+    @Query("SELECT * FROM note ORDER BY time DESC")
     fun getAllNotes() : Flow<List<Note>>
 }
