@@ -1,21 +1,19 @@
 package com.danny.note.presentation.adapter
 
 import android.app.AlertDialog
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.danny.note.R
 import com.danny.note.data.model.Color
 import com.danny.note.data.model.Note
 import com.danny.note.databinding.PreviewLayoutBinding
 import java.time.Instant
-import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.time.temporal.TemporalField
 import java.util.*
 
 class PreviewAdapter : RecyclerView.Adapter<PreviewAdapter.PreviewViewHolder>() {
@@ -29,25 +27,37 @@ class PreviewAdapter : RecyclerView.Adapter<PreviewAdapter.PreviewViewHolder>() 
             return oldItem == newItem
         }
     }
-    inner class PreviewViewHolder(private val binding : PreviewLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(note : Note) {
+
+    inner class PreviewViewHolder(private val binding: PreviewLayoutBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(note: Note) {
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-            val date = Instant.ofEpochMilli(note.time).atZone(ZoneId.systemDefault()).toLocalDateTime()
+            val date =
+                Instant.ofEpochMilli(note.time).atZone(ZoneId.systemDefault()).toLocalDateTime()
             val list = listOf("월", "화", "수", "목", "금", "토", "일")
             binding.apply {
                 title.text = note.title
                 contents.text = note.contents
-                dateTime.text = "${formatter.format(date)} (${list[date.dayOfWeek.value - 1]})"
+                dateTime.text = binding.root.context.getString(
+                    R.string.date,
+                    formatter.format(date),
+                    list[date.dayOfWeek.value - 1]
+                ) //"${formatter.format(date)} (${list[date.dayOfWeek.value - 1]})"
                 tags.apply {
-                    layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+                    layoutManager = LinearLayoutManager(
+                        binding.root.context,
+                        LinearLayoutManager.HORIZONTAL,
+                        false
+                    )
                     adapter = PreviewChildAdapter().apply { differ.submitList(note.tags) }
                 }
                 root.setOnLongClickListener {
-                    AlertDialog.Builder(root.context).setTitle("Delete").setMessage("${note.title} 노트를 지울까요?").setPositiveButton("Y") { _, _ ->
-                        onConfirm?.invoke(note)
-                    }.setNegativeButton("N") {_,_ ->
+                    AlertDialog.Builder(root.context).setTitle("Delete")
+                        .setMessage("${note.title} 노트를 지울까요?").setPositiveButton("Y") { _, _ ->
+                            onConfirm?.invoke(note)
+                        }.setNegativeButton("N") { _, _ ->
 
-                    }.show()
+                        }.show()
                     return@setOnLongClickListener false
                 }
                 root.setOnClickListener {
@@ -60,22 +70,22 @@ class PreviewAdapter : RecyclerView.Adapter<PreviewAdapter.PreviewViewHolder>() 
     val differ = AsyncListDiffer(this, differCallback)
     var currentFilter = listOf<Color>()
     var databaseList = listOf<Note>()
-    private var onConfirm : ((Note) -> Unit)? = null
+    private var onConfirm: ((Note) -> Unit)? = null
 
-    fun setOnConfirm(callback : (Note) -> Unit) {
+    fun setOnConfirm(callback: (Note) -> Unit) {
         onConfirm = callback
     }
 
-    private var onClick : ((Note) -> Unit)? = null
+    private var onClick: ((Note) -> Unit)? = null
 
-    fun setOnClick(callback : (Note) -> Unit) {
+    fun setOnClick(callback: (Note) -> Unit) {
         onClick = callback
     }
 
-    fun submitList(filter : List<Color> = currentFilter, list : List<Note> = databaseList){
+    fun submitList(filter: List<Color> = currentFilter, list: List<Note> = databaseList) {
         currentFilter = filter
         databaseList = list
-        if(filter.isEmpty()) differ.submitList(list)
+        if (filter.isEmpty()) differ.submitList(list)
         else {
             val newList = list.filter { cmp ->
                 val filtered =
@@ -87,7 +97,8 @@ class PreviewAdapter : RecyclerView.Adapter<PreviewAdapter.PreviewViewHolder>() 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PreviewViewHolder {
-        val layout = PreviewLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val layout =
+            PreviewLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PreviewViewHolder(layout)
     }
 
