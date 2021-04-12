@@ -1,6 +1,5 @@
 package com.danny.note.presentation.viewModel
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.danny.note.data.model.Color
 import com.danny.note.data.model.Note

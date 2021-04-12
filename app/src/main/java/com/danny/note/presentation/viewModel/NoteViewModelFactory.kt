@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.danny.note.presentation.viewModel
 
 import androidx.lifecycle.ViewModel

@@ -1,16 +1,12 @@
 package com.danny.note
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.navigation.NavOptions
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.danny.note.databinding.FragmentAddBinding
-import com.danny.note.databinding.FragmentColorBinding
-import com.danny.note.presentation.adapter.SearchAdapter
 import com.danny.note.presentation.viewModel.NoteViewModel
 import com.skydoves.colorpickerview.ColorEnvelope
 import com.skydoves.colorpickerview.listeners.ColorListener
@@ -18,8 +14,8 @@ import com.skydoves.colorpickerview.listeners.ColorListener
 
 class AddFragment : Fragment() {
 
-    lateinit var binding : FragmentAddBinding
-    lateinit var viewModel : NoteViewModel
+    lateinit var binding: FragmentAddBinding
+    lateinit var viewModel: NoteViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,11 +29,14 @@ class AddFragment : Fragment() {
         binding = FragmentAddBinding.bind(view)
         viewModel = (activity as MainActivity).viewModel
 
-        binding.colorPicker.setColorListener (
+        binding.colorPicker.setColorListener(
             object : ColorListener {
                 override fun onColorSelected(color: Int, fromUser: Boolean) {
                     val envelope = ColorEnvelope(color)
-                    binding.colorStr.text = "#${envelope.hexCode.substring(1)}"
+                    binding.colorStr.text = getString(
+                        R.string.color_code,
+                        envelope.hexCode.substring(1)
+                    ) //"#${envelope.hexCode.substring(1)}"
                     viewModel.getColor(envelope)
                 }
             }
@@ -47,7 +46,7 @@ class AddFragment : Fragment() {
         }
 
         viewModel.selectedColor.observe(viewLifecycleOwner) {
-            binding.inputName.setText( it.name )
+            binding.inputName.setText(it.name)
         }
 
         viewModel.transitionRequest.observe(viewLifecycleOwner) {
